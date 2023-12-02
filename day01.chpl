@@ -3,6 +3,8 @@
 
    Read in each line of text, find the first and last digit to make a 2-digit
    number, and then add all of those.
+
+   Edited for part b to recognize digit strings "one" through "nine".
 */
 use IO;
 
