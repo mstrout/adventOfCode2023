@@ -1,5 +1,19 @@
 # adventOfCode2023
 
+## Parsing input in Chapel
+
+### Day 1
+Just using `readLine`.
+```
+7jlncfksix7rjgrpglmn9
+```
+
+### Day 2
+Uses lots of `split` calls on strings.
+```
+Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+```
+
 ## Things that were difficult to find
 
 * An example of how to create map values.
