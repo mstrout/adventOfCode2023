@@ -40,26 +40,11 @@ for row in 0..#numRows {
       }
       endCol -= 1;
 
-      // see if there are symbols around this number
+      // see if there are any gears near this number
       var found = false;
-      var checkStart = col;
-      var checkEnd = endCol;
-      if col>0 {
-        checkStart = col-1;
-        if isSymbol(Schematic[row][checkStart]) then found = true;
+      for (r,c) in idxAround(row,col,endCol) {
+        if isSymbol(Schematic[r][c]) { found = true; }
       }
-      if endCol+1<numCols {
-        checkEnd = endCol+1;
-        if isSymbol(Schematic[row][checkEnd]) then found = true;
-      }
-      for checkCol in checkStart..checkEnd {
-        if row>0 {
-          if isSymbol(Schematic[row-1][checkCol]) then found = true;
-        }
-        if row+1<numRows {
-          if isSymbol(Schematic[row+1][checkCol]) then found = true;
-        }
-      } 
 
       // add in the number of there was a symbol found
       if found {
@@ -80,3 +65,25 @@ writeln("sum = ", sum);
 proc isSymbol(c) {
   return c!="." && !c.isDigit();
 }
+
+// collect all of the indices around the number
+proc idxAround(row,col,endCol) {
+  use Set;
+  var checkStart = col;
+  var checkEnd = endCol;
+  var idxSet : set((int,int));
+  if col>0 {
+    checkStart = col-1;
+    idxSet.add((row,checkStart));
+  }
+  if endCol+1<numCols {
+    checkEnd = endCol+1;
+    idxSet.add((row,checkEnd));
+  }
+  for checkCol in checkStart..checkEnd {
+    if row>0 { idxSet.add((row-1,checkCol)); }
+    if row+1<numRows { idxSet.add((row+1,checkCol)); }
+  } 
+  return idxSet;
+}
+

@@ -20,6 +20,7 @@
 use IO;
 use Map;
 use List;
+use Set;
 
 // Read in schematic as a 1D array of strings
 const Schematic = readLines();
@@ -48,28 +49,11 @@ for row in 0..#numRows {
       var numVal = Schematic[row][col..endCol] : int;
 
       // see if there are any gears near this number
-      var checkStart = col;
-      var checkEnd = endCol;
-      if col>0 {
-        checkStart = col-1;
-        if Schematic[row][checkStart]=="*" {
-          gearMap[(row,checkStart)].pushBack(numVal); 
+      for (r,c) in idxAround(row,col,endCol) {
+        if Schematic[r][c]=="*" {
+          gearMap[(r,c)].pushBack(numVal); 
         }
       }
-      if endCol+1<numCols {
-        checkEnd = endCol+1;
-        if Schematic[row][checkEnd]=="*" {
-          gearMap[(row,checkEnd)].pushBack(numVal); 
-        }
-      }
-      for checkCol in checkStart..checkEnd {
-        if row>0 && Schematic[row-1][checkCol]=="*" {
-          gearMap[(row-1,checkCol)].pushBack(numVal); 
-        }
-        if row+1<numRows && Schematic[row+1][checkCol]=="*" {
-          gearMap[(row+1,checkCol)].pushBack(numVal); 
-        }
-      } 
 
       // found a number so what to reset col at endCol+1
       col = endCol+1;
@@ -82,7 +66,7 @@ for row in 0..#numRows {
 }
 
 // add up gear powers
-writeln("gearMap=",gearMap);
+//writeln("gearMap=",gearMap);
 var sum = 0;
 for coord in gearMap.keys() {
   if gearMap[coord].size == 2 {
@@ -90,3 +74,24 @@ for coord in gearMap.keys() {
   }
 }
 writeln("sum = ", sum);
+
+// collect all of the indices around the number
+proc idxAround(row,col,endCol) {
+  use Set;
+  var checkStart = col;
+  var checkEnd = endCol;
+  var idxSet : set((int,int));
+  if col>0 {
+    checkStart = col-1;
+    idxSet.add((row,checkStart));
+  }
+  if endCol+1<numCols {
+    checkEnd = endCol+1;
+    idxSet.add((row,checkEnd));
+  }
+  for checkCol in checkStart..checkEnd {
+    if row>0 { idxSet.add((row-1,checkCol)); }
+    if row+1<numRows { idxSet.add((row+1,checkCol)); }
+  } 
+  return idxSet;
+}
